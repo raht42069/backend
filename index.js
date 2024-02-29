@@ -40,39 +40,37 @@ app.get("/weeklyLeaderBoard", async (req, res) => {
     try {
         console.log("weekl");
         const currentDate = new Date();
-        const data = await con.query(`SELECT * FROM scoreData WHERE DATEDIFF(Date('${currentDate.toISOString()}'), Date(timeStamp)) < 7 order by score DESC LIMIT 200`)
-        res.send(data[0]);
-    }
-    catch (err) {
+        const connection = await con;
+        const [rows, fields] = await connection.execute(`SELECT * FROM scoreData WHERE DATEDIFF(Date('${currentDate.toISOString()}'), Date(timeStamp)) < 7 order by score DESC LIMIT 200`);
+        res.send(rows);
+    } catch (err) {
         console.log("error: ", err);
         res.send(err);
     }
-})
+});
 
 app.post("/leaderboardByCountry", async (req, res) => {
-    console.log(req.body.CountryCode);
     try {
         const currentDate = new Date();
-        const data = await con.query(`SELECT * FROM scoreData WHERE DATEDIFF(Date('${currentDate.toISOString()}'), Date(timeStamp)) >= 7 AND DATEDIFF(Date('${currentDate.toISOString()}'), Date(timeStamp)) < 14 AND CountryCode = "${req.body.CountryCode}" ORDER BY score DESC LIMIT 200`)
-        res.send(data[0]);
-    }
-    catch (err) {
+        const connection = await con;
+        const [rows, fields] = await connection.execute(`SELECT * FROM scoreData WHERE DATEDIFF(Date('${currentDate.toISOString()}'), Date(timeStamp)) >= 7 AND DATEDIFF(Date('${currentDate.toISOString()}'), Date(timeStamp)) < 14 AND CountryCode = "${req.body.CountryCode}" ORDER BY score DESC LIMIT 200`);
+        res.send(rows);
+    } catch (err) {
         console.log("error: ", err);
         res.send(err);
     }
-})
+});
 
 app.post("/rank", async (req, res) => {
-    try{
-        const data = await con.query(`SELECT COUNT(*) + 1 AS user_rank FROM scoreData WHERE Score > (SELECT Score FROM scoreData WHERE UID = ${req.body.UID})`)
-        res.send(data[0]);
-    }
-    catch(err){
+    try {
+        const connection = await con;
+        const [rows, fields] = await connection.execute(`SELECT COUNT(*) + 1 AS user_rank FROM scoreData WHERE Score > (SELECT Score FROM scoreData WHERE UID = ${req.body.UID})`);
+        res.send(rows);
+    } catch (err) {
         console.log(err);
         res.send(err);
     }
-})
-
+});
 app.listen(PORT,"0.0.0.0", (err) => {
     if (!err) {
         console.log(`server running at ${PORT}`);

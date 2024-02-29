@@ -23,12 +23,6 @@ var con = mysql.createConnection({
   port,
 }).promise();
 
-const connection = await con.connect()
-
-if(connection.connectionId){
-  console.log("database connected");
-}
-else console.log("database connection failed")
 
 
 export default con;
