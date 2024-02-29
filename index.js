@@ -3,9 +3,12 @@ import con from "./database.js";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import cors from "cors";
+import dotenv from 'dotenv';
+// Configure dotenv to read .env file
+dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = 3000|| process.env.PORT;
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -70,7 +73,7 @@ app.post("/rank", async (req, res) => {
     }
 })
 
-app.listen(PORT, (err) => {
+app.listen(PORT,"0.0.0.0", (err) => {
     if (!err) {
         console.log(`server running at ${PORT}`);
     } else {
